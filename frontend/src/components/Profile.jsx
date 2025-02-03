@@ -9,7 +9,11 @@ import { MdOutlineBrokenImage } from "react-icons/md";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+
+import ProfileImageModal from "./ui/ProfileImageModal.jsx";
+
 const Profile = () => {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [user, setUser] = useState();
   useEffect(() => {
     try {
@@ -17,7 +21,6 @@ const Profile = () => {
         .get("/api/v1/users/get-user-profile")
         .then((response) => {
           setUser((prev) => response.data.data);
-         
         })
         .catch((error) => {
           toast.error("error occurred while getting user profile", {
@@ -50,10 +53,18 @@ const Profile = () => {
                 />
               </div>
               <div className="flex justify-around mt-5">
-                <button className=" bg-[#2f0601] text-white hover:underline px-2 py-1 flex items-center rounded-lg gap-2 ">
+                <button
+                  className=" bg-[#2f0601] text-white hover:underline px-2 py-1 flex items-center rounded-lg gap-2 "
+                  onClick={() => setModalIsOpen(true)}
+                >
                   {" "}
                   View <MdOutlineBrokenImage className="" />
                 </button>
+                <ProfileImageModal
+                  imageUrl={user.ProfileImage?user.profileImage:"images/dummy-profile.png"}
+                  isOpen={modalIsOpen}
+                  setIsOpen={setModalIsOpen}
+                />
                 <button className="bg-[#2f0601] text-white px-2 hover:underline py-1 flex items-center rounded-lg gap-2 ">
                   {" "}
                   Edit <MdOutlineBrokenImage className="" />{" "}
@@ -68,11 +79,7 @@ const Profile = () => {
                 <h1 className="text-lg flex items-center">
                   <LuUser className="mr-2 font-bold" /> {"  "}@ {user.username}
                 </h1>
-                <h1 className='text-black mt-5'>
-                  {
-                  user.about
-                  }
-                </h1>
+                <h1 className="text-black mt-5">{user.about}</h1>
               </div>
               <div className="">
                 <button
