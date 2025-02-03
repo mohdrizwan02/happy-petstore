@@ -436,6 +436,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
         username: 1,
         profileImage: 1,
         address: 1,
+        about:1,
         email: 1,
         mobileNumber: 1,
         userUpdated: 1,

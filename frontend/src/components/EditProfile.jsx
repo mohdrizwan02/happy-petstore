@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import axios from "axios";
-import {useDispatch} from 'react-redux'
-import {updateProfile} from '../store/authSlice.js'
-import {toast } from 'react-toastify'
-import {useNavigate} from 'react-router'
+import { useDispatch } from "react-redux";
+import { updateProfile } from "../store/authSlice.js";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 const EditProfile = () => {
-  const navigate = useNavigate()
-    const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [user, setUser] = useState();
   const [country, setCountry] = useState();
   const [state, setState] = useState();
@@ -36,10 +36,9 @@ const EditProfile = () => {
           setPincode(response.data.data.user.address.pincode);
           setHouse(response.data.data.user.address.house);
           setMobileNumber(response.data.data.user.mobileNumber);
-          let words = (response.data.data.user.fullName).split(" ")
-          setFirstName(words[0])
-          setLastName(words[1])
-
+          let words = response.data.data.user.fullName.split(" ");
+          setFirstName(words[0]);
+          setLastName(words[1]);
         })
         .catch((error) => {
           console.log(error);
@@ -51,7 +50,7 @@ const EditProfile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const fullName = firstName+" "+lastName;
+    const fullName = firstName + " " + lastName;
     try {
       axios
         .patch("/api/v1/users/update-profile-details", {
@@ -66,16 +65,17 @@ const EditProfile = () => {
           fullName,
         })
         .then((response) => {
-          console.log(response.data.data.user)
-          toast.success("user details has been successfully updated",{
-            position:"top-center",
-            delay:1000
-          })
-          dispatch(updateProfile(response.data.data.user))
-          navigate('/profile')
-        }).catch((error)=>{
-            console.log(error)
+          console.log(response.data.data.user);
+          toast.success("user details has been successfully updated", {
+            position: "top-center",
+            delay: 1000,
+          });
+          dispatch(updateProfile(response.data.data.user));
+          navigate("/profile");
         })
+        .catch((error) => {
+          console.log(error);
+        });
     } catch (error) {
       console.log(error);
     }
@@ -95,7 +95,7 @@ const EditProfile = () => {
               </p>
 
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                <div className="sm:col-span-4">
+                <div className="sm:col-span-4 sm:col-span-3">
                   <label
                     htmlFor="username"
                     className="block text-sm/6 font-medium text-gray-900"
@@ -153,7 +153,7 @@ const EditProfile = () => {
               </p>
 
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                <div className="sm:col-span-3">
+                <div className="col-span-4 sm:col-span-3">
                   <label
                     htmlFor="first-name"
                     className="block text-sm/6 font-medium text-gray-900"
@@ -174,7 +174,7 @@ const EditProfile = () => {
                   </div>
                 </div>
 
-                <div className="sm:col-span-3">
+                <div className="col-span-4 sm:col-span-3">
                   <label
                     htmlFor="last-name"
                     className="block text-sm/6 font-medium text-gray-900"
@@ -194,7 +194,7 @@ const EditProfile = () => {
                     />
                   </div>
                 </div>
-                <div className="sm:col-span-4">
+                <div className="col-span-4 sm:col-span-3">
                   <label
                     htmlFor="email"
                     className="block text-sm/6 font-medium text-gray-900"
@@ -214,30 +214,29 @@ const EditProfile = () => {
                     />
                   </div>
                 </div>
-                <div className="sm:col-span-4">
+                <div className=" col-span-4 ">
                   <label
                     htmlFor="username"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
                     Email
                   </label>
-                  <div className="mt-2">
-                    <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-[#2f0601] focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
-                      <div className="shrink-0 text-base text-gray-500 select-none sm:text-sm/6"></div>
-                      <input
-                        required
-                        id="username"
-                        name="username"
-                        type="text"
-                        value={user.email}
-                        disabled
-                        className="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                      />
-                    </div>
+
+                  <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-[#2f0601] focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                    <div className="shrink-0 text-base text-gray-500 select-none sm:text-sm/6"></div>
+                    <input
+                      required
+                      id="username"
+                      name="username"
+                      type="text"
+                      value={user.email}
+                      disabled
+                      className="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                    />
                   </div>
                 </div>
 
-                <div className="sm:col-span-4">
+                <div className="col-span-4 sm:col-span-3">
                   <label
                     htmlFor="country"
                     className="block text-sm/6 font-medium text-gray-900"
@@ -262,7 +261,7 @@ const EditProfile = () => {
                   </div>
                 </div>
 
-                <div className="col-span-3">
+                <div className="col-span-4 sm:col-span-3">
                   <label
                     htmlFor="street-address"
                     className="block text-sm/6 font-medium text-gray-900"
@@ -283,7 +282,7 @@ const EditProfile = () => {
                     />
                   </div>
                 </div>
-                <div className="col-span-3">
+                <div className="col-span-4 sm:col-span-3">
                   <label
                     htmlFor="street-address"
                     className="block text-sm/6 font-medium text-gray-900"
@@ -303,7 +302,7 @@ const EditProfile = () => {
                     />
                   </div>
                 </div>
-                <div className="sm:col-span-2 sm:col-start-1">
+                <div className="col-span-4 sm:col-span-3 ">
                   <label
                     htmlFor="city"
                     className="block text-sm/6 font-medium text-gray-900"
@@ -324,7 +323,7 @@ const EditProfile = () => {
                   </div>
                 </div>
 
-                <div className="sm:col-span-2">
+                <div className="col-span-4 sm:col-span-3">
                   <label
                     htmlFor="region"
                     className="block text-sm/6 font-medium text-gray-900"
@@ -345,7 +344,7 @@ const EditProfile = () => {
                   </div>
                 </div>
 
-                <div className="sm:col-span-2">
+                <div className="col-span-4 sm:col-span-3">
                   <label
                     htmlFor="postal-code"
                     className="block text-sm/6 font-medium text-gray-900"
@@ -373,6 +372,7 @@ const EditProfile = () => {
             <button
               type="button"
               className="text-sm/6 font-semibold text-gray-900"
+            onClick={()=>navigate("/profile")}
             >
               Cancel
             </button>

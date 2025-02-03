@@ -17,6 +17,7 @@ const Profile = () => {
         .get("/api/v1/users/get-user-profile")
         .then((response) => {
           setUser((prev) => response.data.data);
+         
         })
         .catch((error) => {
           toast.error("error occurred while getting user profile", {
@@ -27,18 +28,21 @@ const Profile = () => {
       console.log(error.status);
     }
   }, []);
-  
 
   const navigate = useNavigate();
   return (
     <>
       {user ? (
-        <div className="bg-white max-w-screen  m-8 md:mx-20 min-h-screen">
+        <div className="bg-white max-w-screen sm:mx-20 mx-10 m-8 md:mx-28 lg:mx-44  min-h-screen">
           <div className="md:flex block my-5">
             <div className="md:w-[40%] rounded-lg ">
               <div className=" flex justify-center">
                 <img
-                  src={user.profileImage?user.profileImage:"images/dummy-profile.png"}
+                  src={
+                    user.profileImage
+                      ? user.profileImage
+                      : "images/dummy-profile.png"
+                  }
                   height={300}
                   width={300}
                   alt=""
@@ -63,6 +67,11 @@ const Profile = () => {
                 </h1>
                 <h1 className="text-lg flex items-center">
                   <LuUser className="mr-2 font-bold" /> {"  "}@ {user.username}
+                </h1>
+                <h1 className='text-black mt-5'>
+                  {
+                  user.about
+                  }
                 </h1>
               </div>
               <div className="">
@@ -107,8 +116,8 @@ const Profile = () => {
           <div className="font-semibold my-5 text-xl md:text-2xl ">
             <div className="flex-col font-normal text-lg items-center gap-2">
               <div className=" sm:flex mt-3  justify-between">
-                <div className="flex gap-2 items-center">
-                  <MdOutlineHome className="text-2xl" /> Address
+                <div className="flex gap-2 font-semibold items-center">
+                  <MdOutlineHome className="text-2xl " /> Address
                 </div>
                 <div className="flex-col">
                   <div className="">
@@ -159,7 +168,7 @@ const Profile = () => {
                         />
                         <div className="mt-3 space-y-2">
                           <span className="block text-indigo-600 text-sm">
-                            Added At {(blog.createdAt).slice(0,10)}
+                            Added At {blog.createdAt.slice(0, 10)}
                           </span>
                           <h3 className="text-lg text-gray-800 duration-150 group-hover:text-indigo-600 font-semibold">
                             {blog.title}

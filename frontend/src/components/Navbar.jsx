@@ -241,7 +241,7 @@ export default function Navbar() {
               <div className="bg-white w-full rounded-md flex gap-2 justify-between px-3 py-3 items-center ">
                 <div className="flex gap-3 px-1 w-[100px] items-center">
                   <img
-                    src={userData.profileImage || ""}
+                    src={userData.profileImage?userData.profileImage:"images/dummy-profile.png"}
                     className="flex-none w-12 h-12 ring-2 ring-[#2f0601] rounded-full"
                   />
 
@@ -254,7 +254,7 @@ export default function Navbar() {
                     setIsMenuOpen((prev) => !prev);
                     navigate("/profile");
                   }}
-                  className="text-gray-700 text-sm px-1.5 py-2 duration-150 bg-white hover:bg-gray-100"
+                  className=" text-sm px-1.5 py-2 duration-150 text-[#2f0601] font-bold bg-white hover:bg-[#2f0601]/20 rounded-md hover:underline"
                 >
                   view Profile
                 </button>
