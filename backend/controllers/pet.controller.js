@@ -99,19 +99,71 @@ const addPet = asyncHandler(async (req, res) => {
 const getPets = asyncHandler(async (req, res) => {
   const pets = await Pet.find({});
 
-  return res.status(200)
-  .json(
+  return res.status(200).json(
     new ApiResponse(
       200,
       {
-        pets
+        pets,
       },
       "pets has been successfully fetched"
     )
-  )
+  );
+});
 
+const getDogs = asyncHandler(async (req, res) => {
+  const dogs = await Pet.find({
+    type: "dog",
+  });
 
+  console.log(dogs);
 
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        dogs,
+      },
+      "dogs has been fetched successfully"
+    )
+  );
+});
+
+const getDogsByFilter = asyncHandler(async (req, res) => {
+  const { breed, color, city, pincode } = req.body;
+  console.log(breed, color, city, pincode);
+  const query = {};
+
+  query.type = "dog";
+
+  if (breed) {
+    query.breed = breed;
+  }
+  if (color) {
+    query.color = color;
+  }
+  if (city) {
+    query.city = city;
+  }
+  if (pincode) {
+    query.pincode = pincode;
+  }
+  console.log(query);
+
+  const filterDogs = await Pet.find(query);
+
+  console.log(filterDogs);
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          dogs:filterDogs
+        },
+        "filtered settings have been applied successfully"
+      )
+    );
 });
 
 const getPetById = asyncHandler(async (req, res) => {
@@ -141,7 +193,7 @@ const setPetAsAdopted = asyncHandler(async (req, res) => {
   const { petId } = req.params;
 
   const pet = await Pet.findById(new mongoose.Types.ObjectId(petId));
- 
+
   if (String(pet.owner) !== String(req.user._id)) {
     throw new ApiError(
       400,
@@ -156,51 +208,39 @@ const setPetAsAdopted = asyncHandler(async (req, res) => {
     validateBeforeSave: false,
   });
 
-  if(!updatedPet){
-    throw new ApiError(
-      500,
-      "occured and error while marking pet as adopted"
-    )
+  if (!updatedPet) {
+    throw new ApiError(500, "occured and error while marking pet as adopted");
   }
 
-  return res.status(200)
-  .json(
+  return res.status(200).json(
     new ApiResponse(
       200,
       {
-        pet:updatedPet
+        pet: updatedPet,
       },
       "pet has been successfully marked adopted"
     )
-  )
-
+  );
 });
 
+const removePet = asyncHandler(async (req, res) => {
+  const { petId } = req.params;
 
-const removePet = asyncHandler ( async(req,res)=>{
-    const {petId} = req.params
+  const pet = await Pet.findById(new mongoose.Types.ObjectId(petId));
 
-    const pet = await Pet.findById(new mongoose.Types.ObjectId(petId))
+  if (!pet) {
+    throw new ApiError(400, "Pet not found or Invalid pet Id");
+  }
 
-    if(!pet){
-      throw new ApiError(
-        400,
-        "Pet not found or Invalid pet Id"
-      )
-    }
+  if (String(pet.owner) !== String(req.user._id)) {
+    throw new ApiError(400, "you are not the owner :: unauthorized request");
+  }
 
-    if(String(pet.owner)!==String(req.user._id)){
-      throw new ApiError(
-        400,
-        "you are not the owner :: unauthorized request"
-      )
-    }
+  try {
+    const response = await Pet.deleteOne({ _id: petId });
+    console.log(response);
 
-   try {
-     const response = await Pet.deleteOne({_id: petId})
-     console.log(response)
-
-     if (!response) {
+    if (!response) {
       throw new ApiError(400, "error removing the pet or Invalid pet id");
     }
 
@@ -222,20 +262,17 @@ const removePet = asyncHandler ( async(req,res)=>{
           new ApiResponse(200, response, "Pet has been successfully removed")
         );
     }
+  } catch (error) {
+    throw new ApiError(400, "invalid pet id");
+  }
+});
 
-   } catch (error) {
-      throw new ApiError(
-        400,
-        "invalid pet id"
-      )
-   }
-
-
-} )
-
-
-
-
-export { addPet, getPets, getPetById, setPetAsAdopted ,removePet};
-
-
+export {
+  addPet,
+  getPets,
+  getPetById,
+  setPetAsAdopted,
+  removePet,
+  getDogs,
+  getDogsByFilter,
+};

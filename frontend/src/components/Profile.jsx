@@ -11,9 +11,11 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 import ProfileImageModal from "./ui/ProfileImageModal.jsx";
+import EditProfileImageModal from "./ui/EditProfileImageModal.jsx";
 
 const Profile = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [user, setUser] = useState();
   useEffect(() => {
     try {
@@ -30,7 +32,7 @@ const Profile = () => {
     } catch (error) {
       console.log(error.status);
     }
-  }, []);
+  }, [editModalIsOpen]);
 
   const navigate = useNavigate();
   return (
@@ -49,7 +51,7 @@ const Profile = () => {
                   height={300}
                   width={300}
                   alt=""
-                  className="rounded-full h-52 w-52"
+                  className="rounded-full h-52 w-52 object-cover object-center"
                 />
               </div>
               <div className="flex justify-around mt-5">
@@ -60,12 +62,28 @@ const Profile = () => {
                   {" "}
                   View <MdOutlineBrokenImage className="" />
                 </button>
+                <EditProfileImageModal
+                  imageUrl={
+                    user.ProfileImage
+                      ? user.ProfileImage
+                      : "images/dummy-profile.png"
+                  }
+                  isOpen={editModalIsOpen}
+                  setIsOpen={setEditModalIsOpen}
+                />
                 <ProfileImageModal
-                  imageUrl={user.ProfileImage?user.profileImage:"images/dummy-profile.png"}
+                  imageUrl={
+                    user.ProfileImage
+                      ? user.profileImage
+                      : "images/dummy-profile.png"
+                  }
                   isOpen={modalIsOpen}
                   setIsOpen={setModalIsOpen}
                 />
-                <button className="bg-[#2f0601] text-white px-2 hover:underline py-1 flex items-center rounded-lg gap-2 ">
+                <button
+                  className="bg-[#2f0601] text-white px-2 hover:underline py-1 flex items-center rounded-lg gap-2 "
+                  onClick={() => setEditModalIsOpen(true)}
+                >
                   {" "}
                   Edit <MdOutlineBrokenImage className="" />{" "}
                 </button>

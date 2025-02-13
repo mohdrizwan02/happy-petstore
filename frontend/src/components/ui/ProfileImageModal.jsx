@@ -2,10 +2,12 @@ import React from "react";
 import Modal from "react-modal";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import { useSelector } from "react-redux";
 
 Modal.setAppElement("#root"); // Ensure this is set to the root element
 
 const ProfileImageModal = ({ imageUrl, isOpen, setIsOpen }) => {
+  const profileImage = useSelector((state) => state.auth.userData.profileImage);
   return (
     <Modal
       isOpen={isOpen}
@@ -16,7 +18,7 @@ const ProfileImageModal = ({ imageUrl, isOpen, setIsOpen }) => {
       <div className="flex flex-col items-center">
         <Zoom>
           <img
-            src={imageUrl} // Use passed imageUrl prop
+            src={profileImage} // Use passed imageUrl prop
             alt="Profile"
             className="w-64 h-64 object-cover rounded-full cursor-pointer"
           />

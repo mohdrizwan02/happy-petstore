@@ -11,7 +11,8 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="px-8 hidden md:block py-8 bg-[#2F0601]">
+
+    <footer className="px-8 w-full hidden md:block py-8 bg-[#2F0601]">
       <div className="container mx-auto flex flex-col items-center">
         <div className="flex flex-wrap items-center justify-center gap-8 pb-6">
           {footerLinks.map((link) => (

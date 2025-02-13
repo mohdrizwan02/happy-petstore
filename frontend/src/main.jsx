@@ -25,6 +25,9 @@ import AdoptPage from "./pages/Adopt.jsx";
 import RehomePage from "./pages/Rehome.jsx";
 import PageNotFound from "./pages/PageNotFound.jsx";
 import UserBlogsPage from "./pages/UserBlogs.jsx";
+import DogsPage from "./pages/Dogs.jsx";
+import CatsPage from "./pages/Cats.jsx";
+import BirdsPage from "./pages/Birds.jsx";
 
 import AuthMiddleware from "./components/auth/AuthMiddleware.jsx";
 
@@ -39,6 +42,7 @@ createRoot(document.getElementById("root")).render(
       rtl={false}
       pauseOnFocusLoss
       draggable
+      toastStyle={{ width: "300px" , marginTop:"10px" }}
     />
 
     <BrowserRouter>
@@ -66,14 +70,10 @@ createRoot(document.getElementById("root")).render(
           <Route path="services" element={<ServicesPage />} />
           <Route path="contact" element={<ContactPage />} />
           <Route path="profile">
-            <Route index element={
-              <AuthMiddleware>
-                <ProfilePage />
-                </AuthMiddleware>
-              } />
+            <Route index element={<ProfilePage />} />
             <Route path="edit" element={<EditProfilePage />} />
-            <Route path="blogs" >
-              <Route index element={<UserBlogsPage/>}/>
+            <Route path="blogs">
+              <Route index element={<UserBlogsPage />} />
             </Route>
           </Route>
           <Route path="faqs" element={<FAQSPage />} />
@@ -85,6 +85,15 @@ createRoot(document.getElementById("root")).render(
           </Route>
           <Route path="adopt-a-pet">
             <Route index element={<AdoptPage />} />
+            <Route path="dogs">
+              <Route index element={<DogsPage />} />
+            </Route>
+            <Route path="cats">
+              <Route index element={<CatsPage />} />
+            </Route>
+            <Route path="birds">
+              <Route index element={<BirdsPage />} />
+            </Route>
           </Route>
         </Route>
       </Routes>

@@ -8,6 +8,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ClipLoader from "react-spinners/ClipLoader";
 
+
 const navItems = [
   { label: "Home", href: "/", authentication: false },
   { label: "Home", href: "/", authentication: true },
@@ -26,20 +27,19 @@ export default function Navbar() {
 
   const handleLogout = () => {
     setLoading((prev) => true);
-    console.log("logout");
+
     axios
       .get("/api/v1/users/logout")
       .then((response) => {
-        console.log(response.data);
-
         setTimeout(() => {
           toast.success("Logged out successfully", {
             position: "top-center",
             delay: 1000,
           });
           setLoading((prev) => false);
-          dispatch(logout());
-          navigate("/login");
+           dispatch(logout());
+          setTimeout(()=>navigate("/login"));
+         
         }, 1000);
       })
       .catch((error) => {
@@ -57,14 +57,14 @@ export default function Navbar() {
   const isLoggedIn = useSelector((state) => state.auth.authStatus);
 
   return (
-    <nav className="bg-[#2F0601] shadow-md">
+    <nav className="bg-[#2F0601] shadow-md w-full">
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-[100px]">
           <div className="flex items-center">
             <button className="flex-shrink-0" onClick={() => navigate("/")}>
               <img
                 className="h-12 w-auto"
-                src="images/happypets.png"
+                src="/public/images/happypets.png"
                 alt="Logo"
               />
             </button>
@@ -195,7 +195,7 @@ export default function Navbar() {
               <button onClick={() => navigate("/")} className="flex-shrink-0">
                 <img
                   className="h-12 w-auto"
-                  src="images/happypets.png"
+                  src="/public/images/happypets.png"
                   alt="Logo"
                 />
               </button>
@@ -218,7 +218,7 @@ export default function Navbar() {
                     </NavLink>
                   )
               )}
-              {!isLoggedIn &&
+            {!isLoggedIn &&
               navItems.map(
                 (item) =>
                   !item.authentication && (
@@ -241,7 +241,11 @@ export default function Navbar() {
               <div className="bg-white w-full rounded-md flex gap-2 justify-between px-3 py-3 items-center ">
                 <div className="flex gap-3 px-1 w-[100px] items-center">
                   <img
-                    src={userData.profileImage?userData.profileImage:"images/dummy-profile.png"}
+                    src={
+                      userData.profileImage
+                        ? userData.profileImage
+                        : "images/dummy-profile.png"
+                    }
                     className="flex-none w-12 h-12 ring-2 ring-[#2f0601] rounded-full"
                   />
 

@@ -44,7 +44,7 @@ const petSchema = new mongoose.Schema(
     },
 
     age: {
-      type: Number,
+      type: String,
     },
 
     isVaccinated: {
@@ -116,15 +116,14 @@ const petSchema = new mongoose.Schema(
         trim: true,
       },
       pincode: {
-        type: Number,
+        type: String,
         // required: true,
       },
     },
-    
-    reason : {
-        type : String
-    }
-    
+
+    reason: {
+      type: String,
+    },
   },
   {
     timestamps: true,

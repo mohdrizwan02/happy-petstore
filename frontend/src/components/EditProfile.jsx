@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { updateProfile } from "../store/authSlice.js";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import ClipLoader from "react-spinners/ClipLoader.js";
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const EditProfile = () => {
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [mobileNumber, setMobileNumber] = useState();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     try {
@@ -49,36 +51,41 @@ const EditProfile = () => {
   }, []);
 
   const handleSubmit = (e) => {
+    setLoading(true);
     e.preventDefault();
     const fullName = firstName + " " + lastName;
-    try {
-      axios
-        .patch("/api/v1/users/update-profile-details", {
-          country,
-          state,
-          city,
-          locality,
-          pincode,
-          about,
-          mobileNumber,
-          house,
-          fullName,
-        })
-        .then((response) => {
-          console.log(response.data.data.user);
-          toast.success("user details has been successfully updated", {
-            position: "top-center",
-            delay: 1000,
+    setTimeout(() => {
+      try {
+        axios
+          .patch("/api/v1/users/update-profile-details", {
+            country,
+            state,
+            city,
+            locality,
+            pincode,
+            about,
+            mobileNumber,
+            house,
+            fullName,
+          })
+          .then((response) => {
+            toast.success("user details has been successfully updated", {
+              position: "top-center",
+            });
+            dispatch(updateProfile(response.data.data.user));
+            setLoading((prev) => false);
+            navigate("/profile");
+          })
+          .catch((error) => {
+            toast.error("there was an error updating profile details", {
+              position: "top-center",
+            });
+            console.log(error);
           });
-          dispatch(updateProfile(response.data.data.user));
-          navigate("/profile");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } catch (error) {
-      console.log(error);
-    }
+      } catch (error) {
+        console.log(error);
+      }
+    }, 2000);
   };
 
   return (
@@ -95,7 +102,7 @@ const EditProfile = () => {
               </p>
 
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                <div className="sm:col-span-4 sm:col-span-3">
+                <div className="sm:col-span-4 ">
                   <label
                     htmlFor="username"
                     className="block text-sm/6 font-medium text-gray-900"
@@ -372,15 +379,15 @@ const EditProfile = () => {
             <button
               type="button"
               className="text-sm/6 font-semibold text-gray-900"
-            onClick={()=>navigate("/profile")}
+              onClick={() => navigate("/profile")}
             >
               Cancel
             </button>
             <button
-              className="rounded-md bg-[#2f0601] px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-white hover:text-[#2f0601] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f0601]"
+              className="rounded-md bg-[#2f0601] px-3  h-10 w-20 text-base font-semibold text-white shadow-xs  hover:text-white hover:bg-[#2f0601]/75  "
               onClick={handleSubmit}
             >
-              Save
+              {loading ? <ClipLoader color={"white"} size={20} /> : "save"}
             </button>
           </div>
         </form>
