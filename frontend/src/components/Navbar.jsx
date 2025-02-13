@@ -246,7 +246,7 @@ export default function Navbar() {
                         ? userData.profileImage
                         : "images/dummy-profile.png"
                     }
-                    className="flex-none w-12 h-12 ring-2 ring-[#2f0601] rounded-full"
+                    className="flex-none w-12 h-12 ring-2 ring-[#2f0601] rounded-full object-center object-cover"
                   />
 
                   <span className="block text-sm text-[#2f0601] text-left font-semibold">
