@@ -192,6 +192,61 @@ const getPetById = asyncHandler(async (req, res) => {
   );
 });
 
+const getCats = asyncHandler(async(req,res)=>{
+  const cats = await Pet.find({
+    type: "cat",
+  });
+
+  console.log(cats);
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        cats,
+      },
+      "Cats has been fetched successfully"
+    )
+  );
+});
+
+const getCatsByFilter = asyncHandler(async(req,res)=>{
+
+  const { breed, color, city, pincode } = req.body;
+  console.log(breed, color, city, pincode);
+
+  const query = {};
+
+  query.type = "cat";
+
+  if (breed) {
+    query.breed = breed;
+  }
+  if (color) {
+    query.color = color;
+  }
+  if (city) {
+    query.city = city;
+  }
+  if (pincode) {
+    query.pincode = pincode;
+  }
+  console.log(query);
+
+  const filterCats = await Pet.find(query);
+
+  console.log(filterCats);
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        cats: filterCats,
+      },
+      "filtered settings have been applied successfully"
+    )
+  );
+});
 const setPetAsAdopted = asyncHandler(async (req, res) => {
   const { petId } = req.params;
 
@@ -278,4 +333,6 @@ export {
   removePet,
   getDogs,
   getDogsByFilter,
+  getCats,
+  getCatsByFilter,
 };
