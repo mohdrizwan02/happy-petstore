@@ -37,8 +37,8 @@ export default function Navbar() {
             delay: 1000,
           });
           setLoading((prev) => false);
-           dispatch(logout());
-          setTimeout(()=>navigate("/login"));
+           navigate("/login");
+           setTimeout(()=>{dispatch(logout())},2000);
          
         }, 1000);
       })

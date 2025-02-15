@@ -17,23 +17,27 @@ const addPet = asyncHandler(async (req, res) => {
     isVaccinated,
     isSpayed,
     isNeutered,
-    isAdopted,
-    date,
+
     description,
     isGoodWithChildren,
     isGoodWithAnimals,
     reason,
     careTips,
     healthIssues,
-    country,
+    fullName,
+    phone,
     state,
     city,
     pincode,
   } = req.body;
 
+  let newHealthIssues = JSON.parse(healthIssues);
+  let newCareTips = JSON.parse(careTips);
+
   const owner = req.user?._id;
 
   const images = req.files;
+  console.log(images);
 
   let cloudinaryFilesPath = [];
 
@@ -61,18 +65,19 @@ const addPet = asyncHandler(async (req, res) => {
     isSpayed,
     isNeutered,
     owner,
-    adoptionStatus: {
-      isAdopted,
-      date,
-    },
-    careTips,
-    healthIssues,
+
+    careTips: newCareTips,
+    healthIssues: newHealthIssues,
     description,
     isGoodWithChildren,
     isGoodWithAnimals,
     reason,
+    contact:{
+      fullName,
+      phone
+    },  
     location: {
-      country,
+      country: "india",
       state,
       city,
       pincode,
@@ -153,17 +158,15 @@ const getDogsByFilter = asyncHandler(async (req, res) => {
 
   console.log(filterDogs);
 
-  res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        {
-          dogs:filterDogs
-        },
-        "filtered settings have been applied successfully"
-      )
-    );
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        dogs: filterDogs,
+      },
+      "filtered settings have been applied successfully"
+    )
+  );
 });
 
 const getPetById = asyncHandler(async (req, res) => {

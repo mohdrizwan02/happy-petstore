@@ -99,6 +99,15 @@ const petSchema = new mongoose.Schema(
       default: true,
     },
 
+    contact: {
+      fullName: {
+        type: String,
+      },
+      phone: {
+        type: String,
+      },
+    },
+
     location: {
       country: {
         type: String,
