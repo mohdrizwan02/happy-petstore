@@ -5,6 +5,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { MdClose } from "react-icons/md";
 import { useSelector } from "react-redux";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 const Cats = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,10 +13,12 @@ const Cats = () => {
   const [breed, setBreed] = useState();
   const [color, setColor] = useState();
   const [loading, setLoading] = useState(true);
-  const colors = useSelector((state) => state.pet.colors);
   const pets = useSelector((state) => state.pet.pets);
+  const colors = useSelector((state) => state.pet.colors);
   const states = useSelector((state) => state.pet.states);
   const [state, setState] = useState();
+  const [cats, setCats] = useState([]);
+  const [filterCats, setFilterCats] = useState([]);
 
   const [city, setCity] = useState();
   const [pincode, setPincode] = useState();
@@ -28,6 +31,7 @@ const Cats = () => {
       try {
         axios.get("/api/v1/pets/cats").then((response) => {
           console.log(response);
+          setCats((prev) => response.data.data.cats);
           setLoading((prev) => false);
         });
       } catch (error) {
@@ -44,13 +48,14 @@ const Cats = () => {
       setIsModalOpen((prev) => false);
       return;
     }
-    if (!breed && !color && !city && !pincode) {
+    if (!breed && !color && !state && !city && !pincode) {
       setIsModalOpen((prev) => false);
       return;
     }
     setBreed((prev) => "");
     setCity((prev) => "");
     setColor((prev) => "");
+    setState((prev) => "");
     setIsModalOpen((prev) => false);
     setIsFilterSet((prev) => false);
     setLoading((prev) => true);
@@ -60,7 +65,7 @@ const Cats = () => {
   };
 
   const handleFilter = () => {
-    if (!breed && !color && !city && !pincode) {
+    if (!breed && !color && !state && !city && !pincode) {
       setIsFilterSet((prev) => false);
       setIsModalOpen((prev) => false);
       return;
@@ -78,11 +83,13 @@ const Cats = () => {
           .post("/api/v1/pets/cats/filter", {
             breed,
             color,
+            state,
             city,
             pincode,
           })
           .then((response) => {
             console.log(response);
+            setFilterCats((prev) => response.data.data.cats);
             setLoading((prev) => false);
           })
           .catch((error) => {
@@ -203,7 +210,11 @@ const Cats = () => {
                     states.map(
                       (item) =>
                         item.value === state &&
-                        item.cities.map((city,index) => <option key={index}value={city.value}>{city.name}</option>)
+                        item.cities.map((city, index) => (
+                          <option key={index} value={city.value}>
+                            {city.name}
+                          </option>
+                        ))
                     )
                   ) : (
                     <option value={""}>please select the state</option>
@@ -223,11 +234,14 @@ const Cats = () => {
                   value={color}
                   onChange={(e) => setColor((prev) => e.target.value)}
                 >
-                  <option value={""}>Select color</option>
-                  <option value={"black"}>black</option>
-                  <option value={"white"}>white</option>
-                  <option value={"brown"}>brown</option>
-                  <option value={"golden"}>golden</option>
+                  <option defaultValue={""} hidden>
+                    Select color
+                  </option>
+                  {colors.map((color, index) => (
+                    <option key={index} value={color.value}>
+                      {color.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -247,13 +261,104 @@ const Cats = () => {
             </div>
           </div>
         </Modal>
-        <div className="mx-5">
+        <div className="mx-2">
           {loading ? (
             <div className="">Loading ......</div>
           ) : isFilterSet ? (
-            <div className="">filter cats</div>
+            <div className="mx-2 lg:mx-16 my-8">
+              {filterCats.length > 0 ? (
+                <ul className="grid lg:gap-2 gap-4 md:gap-2 sm:grid-cols-2 md:grid-cols-3">
+                  {filterCats.map((cat, index) => (
+                    <li key={index} className="shadow-lg rounded-xl p-3">
+                      <div className="w-full  h-60 sm:h-52 md:h-56">
+                        <img
+                          src={cat.images[0]}
+                          className="w-full h-full object-cover object-center shadow-md rounded-xl"
+                          alt=""
+                        />
+                      </div>
+                      <div className="mt-4">
+                        <h4 className="text-lg text-gray-700 font-semibold">
+                          {cat.name}
+                        </h4>
+                        <h1>
+                          {cat.gender} , {cat.age}
+                        </h1>
+                        <h1 className="">
+                          {cat.city} , {cat.state}
+                        </h1>
+                        <div className="my-3">
+                          <div className="border border-[#2f0601]/50 h-0"></div>
+                        </div>
+                        <h4 className="text-xl text-gray-700 font-semibold">
+                          Contact details
+                        </h4>
+                        <h1 className="">Name : {cat.contact?.fullName}</h1>
+                        <h1 className="">Phone : {cat.contact?.phone}</h1>
+                        <div className="flex justify-center my-2">
+                          <button className="flex items-center gap-2 hover:underline">
+                            view more details <FaExternalLinkAlt />{" "}
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="mx-auto text-center md:text-3xl text-xl mt-20 ">
+                  {" "}
+                  OOPS! no cats found on these filter settings
+                </div>
+              )}
+            </div>
           ) : (
-            <div className="">unfilter cats</div>
+            <div className="mx-2 lg:mx-16 my-8">
+              {cats.length > 0 ? (
+                <ul className="grid lg:gap-2 gap-4 md:gap-2 sm:grid-cols-2 md:grid-cols-3">
+                  {cats.map((cat, index) => (
+                    <li key={index} className="shadow-lg rounded-xl p-3">
+                      <div className="w-full h-60 sm:h-52 md:h-56">
+                        <img
+                          src={cat.images[0]}
+                          className="w-full h-full object-cover object-center shadow-md rounded-xl"
+                          alt=""
+                        />
+                      </div>
+                      <div className="mt-4">
+                        <h4 className="text-xl text-gray-700 font-semibold">
+                          {cat.name}
+                        </h4>
+
+                        <h1>
+                          {cat.gender} , {cat.age}
+                        </h1>
+                        <h1 className="">
+                          {cat.city} , {cat.state}
+                        </h1>
+                        <div className="my-3">
+                          <div className="border border-[#2f0601]/50 h-0"></div>
+                        </div>
+                        <h4 className="text-xl text-gray-700 font-semibold">
+                          Contact details
+                        </h4>
+                        <h1 className="">Name : {cat.contact?.fullName}</h1>
+                        <h1 className="">Phone : {cat.contact?.phone}</h1>
+                        <div className="flex justify-center my-2">
+                          <button className="flex items-center gap-2 hover:underline">
+                            view more details <FaExternalLinkAlt />{" "}
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="mx-auto text-center md:text-3xl text-xl mt-20 ">
+                  {" "}
+                  OOPS! no cats found for adoption{" "}
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>

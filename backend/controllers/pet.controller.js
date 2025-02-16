@@ -72,16 +72,15 @@ const addPet = asyncHandler(async (req, res) => {
     isGoodWithChildren,
     isGoodWithAnimals,
     reason,
-    contact:{
+    contact: {
       fullName,
-      phone
-    },  
-    location: {
-      country: "india",
-      state,
-      city,
-      pincode,
+      phone,
     },
+
+    country: "india",
+    state,
+    city,
+    pincode,
   });
 
   if (!createdPet) {
@@ -134,8 +133,8 @@ const getDogs = asyncHandler(async (req, res) => {
 });
 
 const getDogsByFilter = asyncHandler(async (req, res) => {
-  const { breed, color, city, pincode } = req.body;
-  console.log(breed, color, city, pincode);
+  const { breed, color, state, city, pincode } = req.body;
+  console.log(breed, color, city, pincode, state);
   const query = {};
 
   query.type = "dog";
@@ -151,6 +150,9 @@ const getDogsByFilter = asyncHandler(async (req, res) => {
   }
   if (pincode) {
     query.pincode = pincode;
+  }
+  if(state){
+    query.state = state;
   }
   console.log(query);
 
@@ -192,7 +194,7 @@ const getPetById = asyncHandler(async (req, res) => {
   );
 });
 
-const getCats = asyncHandler(async(req,res)=>{
+const getCats = asyncHandler(async (req, res) => {
   const cats = await Pet.find({
     type: "cat",
   });
@@ -210,9 +212,8 @@ const getCats = asyncHandler(async(req,res)=>{
   );
 });
 
-const getCatsByFilter = asyncHandler(async(req,res)=>{
-
-  const { breed, color, city, pincode } = req.body;
+const getCatsByFilter = asyncHandler(async (req, res) => {
+  const { breed, color, city, pincode , state } = req.body;
   console.log(breed, color, city, pincode);
 
   const query = {};
@@ -231,6 +232,10 @@ const getCatsByFilter = asyncHandler(async(req,res)=>{
   if (pincode) {
     query.pincode = pincode;
   }
+
+  if (state){
+    query.state = state;
+  }
   console.log(query);
 
   const filterCats = await Pet.find(query);
@@ -247,6 +252,66 @@ const getCatsByFilter = asyncHandler(async(req,res)=>{
     )
   );
 });
+
+const getBirds = asyncHandler(async(req,res)=>{
+
+  const birds = await Pet.find({
+    type: "bird",
+  });
+
+  console.log(birds);
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        birds,
+      },
+      "Birds has been fetched successfully"
+    )
+  );
+});
+
+const getBirdsByFilter = asyncHandler(async(req,res)=>{
+
+ const { breed, color, state, city, pincode } = req.body;
+  console.log(breed, color, city, pincode, state);
+  const query = {};
+
+  query.type = "bird";
+
+  if (breed) {
+    query.breed = breed;
+  }
+  if (color) {
+    query.color = color;
+  }
+  if (city) {
+    query.city = city;
+  }
+  if (pincode) {
+    query.pincode = pincode;
+  }
+  if(state){
+    query.state = state;
+  }
+  console.log(query);
+
+  const filterBirds = await Pet.find(query);
+
+  console.log(filterBirds);
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        birds: filterBirds,
+      },
+      "filtered settings have been applied successfully"
+    )
+  );
+});
+
 const setPetAsAdopted = asyncHandler(async (req, res) => {
   const { petId } = req.params;
 
@@ -335,4 +400,6 @@ export {
   getDogsByFilter,
   getCats,
   getCatsByFilter,
+  getBirds,
+  getBirdsByFilter
 };

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ClipLoader from "react-spinners/ClipLoader";
-import {useNavigate} from 'react-router'
+import { useNavigate } from "react-router";
 
 const RehomePage = () => {
   const navigate = useNavigate();
@@ -34,82 +34,11 @@ const RehomePage = () => {
   const [pincode, setPincode] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const types = [
-    {
-      name: "Dog",
-      value: "dog",
-      logo: "/public/images/dogLogo.png",
-      breed: [
-        {
-          name: "d1",
-          value: "d1",
-        },
-        {
-          name: "d2",
-          value: "d2",
-        },
-        {
-          name: "d3",
-          value: "d3",
-        },
-        {
-          name: "d4",
-          value: "d4",
-        },
-      ],
-    },
-    ,
-    {
-      name: "Cat",
-      value: "cat",
-      logo: "/public/images/catLogo.png",
-      breed: [
-        {
-          name: "c1",
-          value: "c1",
-        },
-        {
-          name: "c2",
-          value: "c2",
-        },
-        {
-          name: "c3",
-          value: "c3",
-        },
-        {
-          name: "c4",
-          value: "c4",
-        },
-        {
-          name: "c5",
-          value: "c5",
-        },
-      ],
-    },
-    {
-      name: "Bird",
-      value: "bird",
-      logo: "/public/images/birdLogo.png",
-      breed: [
-        {
-          name: "b1",
-          value: "b1",
-        },
-        {
-          name: "b2",
-          value: "b2",
-        },
-        {
-          name: "b3",
-          value: "b3",
-        },
-        {
-          name: "b4",
-          value: "b4",
-        },
-      ],
-    },
-  ];
+  const petTypes = useSelector((state) => state.pet.pets);
+  const colors = useSelector((state) => state.pet.colors);
+  const states = useSelector((state) => state.pet.states);
+
+  
 
   const handleSubmit = (e) => {
     setLoading((prev) => true);
@@ -149,23 +78,21 @@ const RehomePage = () => {
       !isGoodWithChildren ||
       !isGoodWithAnimals ||
       !reason ||
-      // !healthIssues.some((issue) => issue) ||
-      // !careTips.some((tip) => tip) ||
       !description ||
       !fullName ||
       !phone ||
       !state ||
       !city ||
       !pincode ||
-      !images.some((image) => image !== null) // Ensure at least one image is uploaded
+      !images.some((image) => image !== null)
     ) {
-      setError((prev)=>" Validation failed! Some fields are empty.");
-      
-      toast.error(error,{
-        position:"top-center"
-      })
-      setLoading((prev)=>false)
-      setCurrntStep((prev)=>1)
+      setError((prev) => " Validation failed! Some fields are empty.");
+
+      toast.error("Validation failed! Some fields are empty.", {
+        position: "top-center",
+      });
+      setLoading((prev) => false);
+      setCurrntStep((prev) => 1);
       return;
     }
 
@@ -202,7 +129,7 @@ const RehomePage = () => {
       }
     });
 
-    setTimeout(()=>{
+    setTimeout(() => {
       axios
         .post("/api/v1/pets/add-pet", formData, {
           headers: {
@@ -224,9 +151,10 @@ const RehomePage = () => {
         })
         .catch((error) => {
           toast.error("error adding your pet for listing please try again");
+          setLoading((prev)=>false)
           navigate("/rehome-a-pet");
         });
-    },2000)
+    }, 2000);
   };
 
   const addCareTip = () => {
@@ -303,32 +231,35 @@ const RehomePage = () => {
                     Pet Type ?
                   </label>
                   <div className="grid grid-cols-3 gap-4">
-                    {types.map((item) => (
+                    {petTypes.map((pet, index) => (
                       <label
                         className={`
                         flex flex-col items-center md:p-4 px-2 py-4  rounded-lg border-2 cursor-pointer
                         transition-all duration-200 hover:border-[#2f0601]
                         ${
-                          type === item.value
+                          type === pet.value
                             ? "border-[#2f0601]"
                             : "border-gray-200"
                         }
                       `}
-                        key={item.name}
+                        key={index}
                       >
                         <input
                           type="radio"
                           name="type"
-                          value={item.value}
-                          checked={type === item.value}
+                          value={pet.value}
+                          checked={type === pet.value}
                           onChange={(e) => setType((prev) => e.target.value)}
                           className="sr-only"
                         />
                         <div className="container mx-auto">
-                          <img src={item.logo} className="h-16 mx-auto" />
+                          <img
+                            src={`/public/images/${pet.value}Logo.png`}
+                            className="h-16 mx-auto"
+                          />
 
                           <h1 className="text-base text-center  font-medium">
-                            {item.name}
+                            {pet.name}
                           </h1>
                         </div>
                       </label>
@@ -351,11 +282,11 @@ const RehomePage = () => {
                         Select breed here
                       </option>
                       {type ? (
-                        types.map(
-                          (item) =>
-                            item.value === type &&
-                            item.breed.map((item) => (
-                              <option value={item.value} key={item.name}>
+                        petTypes.map(
+                          (pet) =>
+                            pet.value === type &&
+                            pet.breed.map((item, index) => (
+                              <option value={item.value} key={index}>
                                 {item.name}
                               </option>
                             ))
@@ -508,13 +439,22 @@ const RehomePage = () => {
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Pet Color
                   </label>
-                  <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    type="text"
-                    placeholder=""
+                  <select
+                    id="breed"
+                    className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    required
                     value={color}
                     onChange={(e) => setColor((prev) => e.target.value)}
-                  />
+                  >
+                    <option defaultValue={""} hidden>
+                      select color
+                    </option>
+                    {colors.map((item, index) => (
+                      <option value={item.value} key={index}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="col-span-full mt-3">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -969,17 +909,18 @@ const RehomePage = () => {
                   </label>
                   <select
                     id="city"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     value={state}
                     onChange={(e) => setState((prev) => e.target.value)}
                   >
                     <option defaultValue={""} hidden>
                       Select State
                     </option>
-                    <option value={"s1"}>State1</option>
-                    <option value={"s2"}>state2</option>
-                    <option value={"s3"}>state3</option>
-                    <option value={"s4"}>state4</option>
+                    {states.map((item, index) => (
+                      <option key={index} value={item.value}>
+                        {item.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="col-span-full mt-4">
@@ -988,17 +929,26 @@ const RehomePage = () => {
                   </label>
                   <select
                     id="city"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     value={city}
                     onChange={(e) => setCity((prev) => e.target.value)}
                   >
                     <option defaultValue={""} hidden>
                       Select city
                     </option>
-                    <option value={"c1"}>city1</option>
-                    <option value={"c2"}>city2</option>
-                    <option value={"c3"}>city3</option>
-                    <option value={"c4"}>city4</option>
+                    {state ? (
+                      states.map(
+                        (item) =>
+                          item.value === state &&
+                          item.cities.map((item, index) => (
+                            <option value={item.value} key={index}>
+                              {item.name}
+                            </option>
+                          ))
+                      )
+                    ) : (
+                      <option> please select state</option>
+                    )}
                   </select>
                 </div>
                 <div className="col-span-full mt-4">

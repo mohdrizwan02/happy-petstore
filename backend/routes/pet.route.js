@@ -4,7 +4,7 @@ import { authentication } from "../middlewares/auth.middelware.js";
 
 import { upload } from "../middlewares/multer.middleware.js";
 
-import { addPet, getPets, getPetById, setPetAsAdopted, removePet ,getDogs , getDogsByFilter , getCats , getCatsByFilter} from "../controllers/pet.controller.js";
+import { addPet, getPets, getPetById, setPetAsAdopted, removePet ,getDogs , getDogsByFilter , getCats , getCatsByFilter, getBirds, getBirdsByFilter} from "../controllers/pet.controller.js";
 
 const router = Router();
 
@@ -27,5 +27,9 @@ router.route("/dogs").get(getDogs)
 router.route("/cats").get(getCats)
 
 router.route("/cats/filter").post(getCatsByFilter)
+
+router.route("/birds").get(getBirds)
+
+router.route("/birds/filter").post(getBirdsByFilter)
 
 export default router;

@@ -146,16 +146,16 @@ const Profile = () => {
                 </div>
                 <div className="flex-col">
                   <div className="">
-                    {user.address.house ? user.address.house : "xxxxx"} ,{" "}
-                    {user.address.locality ? user.address.locality : "xxxxxxx"}{" "}
+                    {user?.address?.house ? user.address.house : "xxxxx"} ,{" "}
+                    {user?.address?.locality ? user.address.locality : "xxxxxxx"}{" "}
                   </div>
                   <div className="">
-                    {user.address.city ? user.address.city : "xxxxxxxx"} ,{" "}
-                    {user.address.pincode ? user.address.pincode : "000000"}{" "}
+                    {user?.address?.city ? user.address.city : "xxxxxxxx"} ,{" "}
+                    {user?.address?.pincode ? user.address.pincode : "000000"}{" "}
                   </div>
                   <div className="">
-                    {user.address.state ? user.address.state : "xxxxxx"} ,
-                    {user.address.country ? user.address.country : "xxxxxx"}{" "}
+                    {user?.address?.state ? user?.address?.state : "xxxxxx"} ,
+                    {user?.address?.country ? user?.address?.country : "xxxxxx"}{" "}
                   </div>
                 </div>
               </div>

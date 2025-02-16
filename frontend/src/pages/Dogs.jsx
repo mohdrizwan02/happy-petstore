@@ -4,6 +4,8 @@ import Modal from "react-modal";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { MdClose } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 const Dogs = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,6 +13,12 @@ const Dogs = () => {
   const [breed, setBreed] = useState();
   const [color, setColor] = useState();
   const [loading, setLoading] = useState(true);
+  const colors = useSelector((state) => state.pet.colors);
+  const pets = useSelector((state) => state.pet.pets);
+  const states = useSelector((state) => state.pet.states);
+  const [state, setState] = useState();
+  const [dogs, setDogs] = useState([]);
+  const [filterDogs, setFilterDogs] = useState([]);
 
   const [city, setCity] = useState();
   const [pincode, setPincode] = useState();
@@ -23,6 +31,7 @@ const Dogs = () => {
       try {
         axios.get("/api/v1/pets/dogs").then((response) => {
           console.log(response);
+          setDogs((prev) => response.data.data.dogs);
           setLoading((prev) => false);
         });
       } catch (error) {
@@ -39,13 +48,14 @@ const Dogs = () => {
       setIsModalOpen((prev) => false);
       return;
     }
-    if (!breed && !color && !city && !pincode) {
+    if (!breed && !color && !state && !city && !pincode) {
       setIsModalOpen((prev) => false);
       return;
     }
     setBreed((prev) => "");
     setCity((prev) => "");
     setColor((prev) => "");
+    setState((prev) => "");
     setIsModalOpen((prev) => false);
     setIsFilterSet((prev) => false);
     setLoading((prev) => true);
@@ -55,7 +65,7 @@ const Dogs = () => {
   };
 
   const handleFilter = () => {
-    if (!breed && !color && !city && !pincode) {
+    if (!breed && !color && !state && !city && !pincode) {
       setIsFilterSet((prev) => false);
       setIsModalOpen((prev) => false);
       return;
@@ -67,17 +77,19 @@ const Dogs = () => {
     console.log(breed, color, city);
 
     setTimeout(() => {
-      console.log("startinf filter");
+      console.log("starting filter");
       try {
         axios
           .post("/api/v1/pets/dogs/filter", {
             breed,
             color,
+            state,
             city,
             pincode,
           })
           .then((response) => {
             console.log(response);
+            setFilterDogs((prev) => response.data.data.dogs);
             setLoading((prev) => false);
           })
           .catch((error) => {
@@ -113,7 +125,7 @@ const Dogs = () => {
           isOpen={isModalOpen}
           shouldCloseOnOverlayClick={false}
           onRequestClose={() => setIsModalOpen(false)}
-          className="flex items-center justify-center w-4/5  bg-white p-6 rounded-lg shadow-xl"
+          className="flex items-center justify-center w-4/5  bg-white border-2 border-[#2f0601] p-6 rounded-lg shadow-xl"
           overlayClassName="fixed inset-0 bg-opacity-100 flex items-center justify-center"
         >
           <div className="w-full ">
@@ -141,11 +153,41 @@ const Dogs = () => {
                   value={breed}
                   onChange={(e) => setBreed((prev) => e.target.value)}
                 >
-                  <option value={""}>Select breed</option>
-                  <option value={"b1"}>breed1</option>
-                  <option value={"b2"}>breed2</option>
-                  <option value={"b3"}>breed3</option>
-                  <option value={"b4"}>breed4</option>
+                  <option defaultValue={""} hidden>
+                    Select breed
+                  </option>
+                  {pets.map(
+                    (pet) =>
+                      pet.value === "dog" &&
+                      pet.breed.map((item, index) => (
+                        <option key={index} value={item.value}>
+                          {item.name}
+                        </option>
+                      ))
+                  )}
+                </select>
+              </div>
+              <div className="w-full my-2">
+                <label
+                  htmlFor="state"
+                  className="block mb-2 text-sm font-medium text-gray-900 "
+                >
+                  State
+                </label>
+                <select
+                  id="state"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                  value={state}
+                  onChange={(e) => setState((prev) => e.target.value)}
+                >
+                  <option defaultValue={""} hidden>
+                    Select State
+                  </option>
+                  {states.map((state, index) => (
+                    <option value={state.value} key={index}>
+                      {state.name}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="w-full my-2">
@@ -153,7 +195,7 @@ const Dogs = () => {
                   htmlFor="city"
                   className="block mb-2 text-sm font-medium text-gray-900 "
                 >
-                  Color
+                  City
                 </label>
                 <select
                   id="city"
@@ -161,11 +203,22 @@ const Dogs = () => {
                   value={city}
                   onChange={(e) => setCity((prev) => e.target.value)}
                 >
-                  <option value={""}>Select city</option>
-                  <option value={"c1"}>city1</option>
-                  <option value={"c2"}>city2</option>
-                  <option value={"c3"}>city3</option>
-                  <option value={"c4"}>city4</option>
+                  <option defaultValue={""} hidden>
+                    Select city
+                  </option>
+                  {state ? (
+                    states.map(
+                      (item) =>
+                        item.value === state &&
+                        item.cities.map((city, index) => (
+                          <option value={city.value} key={index}>
+                            {city.name}
+                          </option>
+                        ))
+                    )
+                  ) : (
+                    <option>please select state first</option>
+                  )}
                 </select>
               </div>
               <div className="w-full my-2">
@@ -181,11 +234,14 @@ const Dogs = () => {
                   value={color}
                   onChange={(e) => setColor((prev) => e.target.value)}
                 >
-                  <option value={""}>Select color</option>
-                  <option value={"black"}>black</option>
-                  <option value={"white"}>white</option>
-                  <option value={"brown"}>brown</option>
-                  <option value={"golden"}>golden</option>
+                  <option defaultValue={""} hidden>
+                    Select color
+                  </option>
+                  {colors.map((item, index) => (
+                    <option key={index} value={item.value}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -205,13 +261,107 @@ const Dogs = () => {
             </div>
           </div>
         </Modal>
-        <div className="mx-5">
+        <div className="">
+          <div className="border border-[#2f0601]/50 h-0"></div>
+        </div>
+        <div className="mx-2">
           {loading ? (
             <div className="">Loading ......</div>
           ) : isFilterSet ? (
-            <div className="">filte dogs</div>
+            <div className="mx-2 lg:mx-16 my-8">
+              {filterDogs.length > 0 ? (
+                <ul className="grid lg:gap-2 gap-4 md:gap-2 sm:grid-cols-2 md:grid-cols-3">
+                  {filterDogs.map((dog, index) => (
+                    <li key={index} className="shadow-lg rounded-xl p-3">
+                      <div className="w-full  h-60 sm:h-52 md:h-56">
+                        <img
+                          src={dog.images[0]}
+                          className="w-full h-full object-cover object-center shadow-md rounded-xl"
+                          alt=""
+                        />
+                      </div>
+                      <div className="mt-4">
+                        <h4 className="text-lg text-gray-700 font-semibold">
+                          {dog.name}
+                        </h4>
+                        <h1>
+                          {dog.gender} , {dog.age}
+                        </h1>
+                        <h1 className="">
+                          {dog.city} , {dog.state}
+                        </h1>
+                        <div className="my-3">
+                          <div className="border border-[#2f0601]/50 h-0"></div>
+                        </div>
+                        <h4 className="text-xl text-gray-700 font-semibold">
+                          Contact details
+                        </h4>
+                        <h1 className="">Name : {dog.contact?.fullName}</h1>
+                        <h1 className="">Phone : {dog.contact?.phone}</h1>
+                        <div className="flex justify-center my-2">
+                          <button className="flex items-center gap-2 hover:underline">
+                            view more details <FaExternalLinkAlt />{" "}
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="mx-auto text-center md:text-3xl text-xl mt-20 ">
+                  {" "}
+                  OOPS! no Dogs found on these filter settings
+                </div>
+              )}
+            </div>
           ) : (
-            <div className="">unfilter dogs</div>
+            <div className="mx-2 lg:mx-16 my-8">
+              {dogs.length > 0 ? (
+                <ul className="grid lg:gap-2 gap-4 md:gap-2 sm:grid-cols-2 md:grid-cols-3">
+                  {dogs.map((dog, index) => (
+                    <li key={index} className="shadow-lg rounded-xl p-3">
+                      <div className="w-full h-60 sm:h-52 md:h-56">
+                        <img
+                          src={dog.images[0]}
+                          className="w-full h-full object-cover object-center shadow-md rounded-xl"
+                          alt=""
+                        />
+                      </div>
+                      <div className="mt-4">
+                        <h4 className="text-xl text-gray-700 font-semibold">
+                          {dog.name}
+                        </h4>
+
+                        <h1>
+                          {dog.gender} , {dog.age}
+                        </h1>
+                        <h1 className="">
+                          {dog.city} , {dog.state}
+                        </h1>
+                        <div className="my-3">
+                          <div className="border border-[#2f0601]/50 h-0"></div>
+                        </div>
+                        <h4 className="text-xl text-gray-700 font-semibold">
+                          Contact details
+                        </h4>
+                        <h1 className="">Name : {dog.contact?.fullName}</h1>
+                        <h1 className="">Phone : {dog.contact?.phone}</h1>
+                        <div className="flex justify-center my-2">
+                          <button className="flex items-center gap-2 hover:underline">
+                            view more details <FaExternalLinkAlt />{" "}
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="mx-auto text-center md:text-3xl text-xl mt-20 ">
+                  {" "}
+                  OOPS! no Dogs found for adoption{" "}
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
