@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { MdClose } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { useNavigate } from "react-router";
 
 const Dogs = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,6 +20,7 @@ const Dogs = () => {
   const [state, setState] = useState();
   const [dogs, setDogs] = useState([]);
   const [filterDogs, setFilterDogs] = useState([]);
+  const navigate = useNavigate();
 
   const [city, setCity] = useState();
   const [pincode, setPincode] = useState();
@@ -127,6 +129,7 @@ const Dogs = () => {
           onRequestClose={() => setIsModalOpen(false)}
           className="flex items-center justify-center w-4/5  bg-white border-2 border-[#2f0601] p-6 rounded-lg shadow-xl"
           overlayClassName="fixed inset-0 bg-opacity-100 flex items-center justify-center"
+          bodyOpenClassName="overflow-hidden"
         >
           <div className="w-full ">
             <div className="flex justify-end">
@@ -299,7 +302,10 @@ const Dogs = () => {
                         <h1 className="">Name : {dog.contact?.fullName}</h1>
                         <h1 className="">Phone : {dog.contact?.phone}</h1>
                         <div className="flex justify-center my-2">
-                          <button className="flex items-center gap-2 hover:underline">
+                          <button
+                            className="flex items-center gap-2 hover:underline"
+                            onClick={() => navigate(`${dog._id}`)}
+                          >
                             view more details <FaExternalLinkAlt />{" "}
                           </button>
                         </div>
@@ -347,7 +353,10 @@ const Dogs = () => {
                         <h1 className="">Name : {dog.contact?.fullName}</h1>
                         <h1 className="">Phone : {dog.contact?.phone}</h1>
                         <div className="flex justify-center my-2">
-                          <button className="flex items-center gap-2 hover:underline">
+                          <button
+                            className="flex items-center gap-2 hover:underline"
+                            onClick={() => navigate(`${dog._id}`)}
+                          >
                             view more details <FaExternalLinkAlt />{" "}
                           </button>
                         </div>

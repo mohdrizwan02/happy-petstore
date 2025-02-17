@@ -6,6 +6,8 @@ import { createRoot } from "react-dom/client";
 import store from "./store/store.js";
 import { CookiesProvider } from "react-cookie";
 import { ToastContainer } from "react-toastify";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 import { Provider } from "react-redux";
 
@@ -28,6 +30,7 @@ import UserBlogsPage from "./pages/UserBlogs.jsx";
 import DogsPage from "./pages/Dogs.jsx";
 import CatsPage from "./pages/Cats.jsx";
 import BirdsPage from "./pages/Birds.jsx";
+import ViewPet from "./pages/ViewPet.jsx";
 
 import AuthMiddleware from "./components/auth/AuthMiddleware.jsx";
 
@@ -42,7 +45,7 @@ createRoot(document.getElementById("root")).render(
       rtl={false}
       pauseOnFocusLoss
       draggable
-      toastStyle={{ width: "300px" , marginTop:"10px" }}
+      toastStyle={{ width: "300px", marginTop: "10px" }}
     />
 
     <BrowserRouter>
@@ -87,13 +90,17 @@ createRoot(document.getElementById("root")).render(
             <Route index element={<AdoptPage />} />
             <Route path="dogs">
               <Route index element={<DogsPage />} />
+              {/* <Route path=":id" element={<ViewPet />} /> */}
             </Route>
             <Route path="cats">
               <Route index element={<CatsPage />} />
+              {/* <Route path=":id" element={<ViewPet />} /> */}
             </Route>
             <Route path="birds">
               <Route index element={<BirdsPage />} />
+              {/* <Route path=":id" element={<ViewPet />} /> */}
             </Route>
+            <Route path=":type/:id" element={<ViewPet/>}/>
           </Route>
         </Route>
       </Routes>

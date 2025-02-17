@@ -127,6 +127,7 @@ const Cats = () => {
           onRequestClose={() => setIsModalOpen(false)}
           className="flex items-center justify-center w-4/5  bg-white border-2 border-[#2f0601] p-6 rounded-lg shadow-xl"
           overlayClassName="fixed inset-0 bg-opacity-100 flex items-center justify-center"
+          bodyOpenClassName="overflow-hidden"
         >
           <div className="w-full ">
             <div className="flex justify-end">
