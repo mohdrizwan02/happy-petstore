@@ -25,25 +25,30 @@ const EditProfile = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     try {
       axios
         .get("/api/v1/users/current-user")
         .then((response) => {
-          
-          setUser((prev)=>response.data.data.user);
-          setAbout((prev)=>response.data.data.user.about ? response.data.data.user.about : "" );
-          setCity((prev)=>response.data.data.user.address?.city || "");
-          setCountry((prev)=>response.data.data.user.address?.country || "");
-          setState((prev)=>response.data.data.user.address?.state || "");
-          setLocality((prev)=>response.data.data.user.address?.locality || "");
-          setPincode((prev)=>response.data.data.user.address?.pincode || "");
-          setHouse((prev)=>response.data.data.user.address?.house || "");
-          setMobileNumber((prev)=>response.data.data.user?.mobileNumber || "");
+          setUser((prev) => response.data.data.user);
+          setAbout((prev) =>
+            response.data.data.user.about ? response.data.data.user.about : ""
+          );
+          setCity((prev) => response.data.data.user.address?.city || "");
+          setCountry((prev) => response.data.data.user.address?.country || "");
+          setState((prev) => response.data.data.user.address?.state || "");
+          setLocality(
+            (prev) => response.data.data.user.address?.locality || ""
+          );
+          setPincode((prev) => response.data.data.user.address?.pincode || "");
+          setHouse((prev) => response.data.data.user.address?.house || "");
+          setMobileNumber(
+            (prev) => response.data.data.user?.mobileNumber || ""
+          );
           let words = response.data.data.user.fullName.split(" ");
-          
-          setFirstName((prev)=>words[0]);
-          setLastName((prev)=>words[1]);
-         
+
+          setFirstName((prev) => words[0]);
+          setLastName((prev) => words[1]);
         })
         .catch((error) => {
           console.log(error);
@@ -56,6 +61,7 @@ const EditProfile = () => {
   const handleSubmit = (e) => {
     setLoading(true);
     e.preventDefault();
+    console.log(country);
     const fullName = firstName + " " + lastName;
     setTimeout(() => {
       try {
@@ -255,19 +261,16 @@ const EditProfile = () => {
                   </label>
                   <div className="mt-2 grid grid-cols-1">
                     <select
-                      id="country"
                       value={country}
-                      name="country"
-                      autoComplete="country-name"
-                      onChange={(e) => setCountry(e.target.value)}
-                      className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 o focus-ring-2 focus:ring-inset focus:ring-[#2f0601]offset-1 outline-[#2f0601] focus:outline-2 ring-1 ring-black focus:-outline-offset-2  sm:text-sm/6"
+                      onChange={(e) => setCountry((prev) => e.target.value)}
+                      className="col-start-1 row-start-1 w-full rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 o focus-ring-2 focus:ring-inset focus:ring-[#2f0601]offset-1 outline-[#2f0601] focus:outline-2 ring-1 ring-black focus:-outline-offset-2  sm:text-sm/6"
                     >
+                      <option defaultValue={""} hidden>
+                        Select Country
+                      </option>
+                      <option value={"other"}>Other</option>
                       <option value={"india"}>India</option>
                     </select>
-                    <ChevronDownIcon
-                      aria-hidden="true"
-                      className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-                    />
                   </div>
                 </div>
 

@@ -24,6 +24,7 @@ const Cats = () => {
   const [pincode, setPincode] = useState();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     setLoading((prev) => true);
     setTimeout(() => {
       console.log(loading);
@@ -44,6 +45,7 @@ const Cats = () => {
   }, []);
 
   const resetFilter = () => {
+    window.scrollTo(0, 0);
     if (!isFilterSet) {
       setIsModalOpen((prev) => false);
       return;
@@ -65,6 +67,7 @@ const Cats = () => {
   };
 
   const handleFilter = () => {
+    window.scrollTo(0, 0);
     if (!breed && !color && !state && !city && !pincode) {
       setIsFilterSet((prev) => false);
       setIsModalOpen((prev) => false);
@@ -264,7 +267,9 @@ const Cats = () => {
         </Modal>
         <div className="mx-2">
           {loading ? (
-            <div className="">Loading ......</div>
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+            </div>
           ) : isFilterSet ? (
             <div className="mx-2 lg:mx-16 my-8">
               {filterCats.length > 0 ? (

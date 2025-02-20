@@ -18,6 +18,7 @@ const Profile = () => {
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [user, setUser] = useState();
   useEffect(() => {
+    
     try {
       axios
         .get("/api/v1/users/get-user-profile")
@@ -147,7 +148,9 @@ const Profile = () => {
                 <div className="flex-col">
                   <div className="">
                     {user?.address?.house ? user.address.house : "xxxxx"} ,{" "}
-                    {user?.address?.locality ? user.address.locality : "xxxxxxx"}{" "}
+                    {user?.address?.locality
+                      ? user.address.locality
+                      : "xxxxxxx"}{" "}
                   </div>
                   <div className="">
                     {user?.address?.city ? user.address.city : "xxxxxxxx"} ,{" "}
@@ -179,10 +182,10 @@ const Profile = () => {
             <section className="">
               <div className="max-w-screen-xl mx-auto px-4 md:px-8">
                 <ul className="grid gap-x-8 gap-y-10 mt-16 sm:grid-cols-2 lg:grid-cols-3">
-                  {user.userBlogs?.map((blog) => (
+                  {user.userBlogs?.map((blog, index) => (
                     <li
                       className="w-full mx-auto group sm:max-w-sm"
-                      key={blog.title}
+                      key={index}
                     >
                       <a href="">
                         <img

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -6,6 +6,10 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router";
 
 const RehomePage = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
   const [name, setName] = useState("");
@@ -38,8 +42,6 @@ const RehomePage = () => {
   const colors = useSelector((state) => state.pet.colors);
   const states = useSelector((state) => state.pet.states);
 
-  
-
   const handleSubmit = (e) => {
     setLoading((prev) => true);
     console.log("Name:", name);
@@ -69,12 +71,8 @@ const RehomePage = () => {
       !name ||
       !type ||
       !breed ||
-      !age ||
       !gender ||
       !color ||
-      !isVaccinated ||
-      !isSpayed ||
-      !isNeutered ||
       !isGoodWithChildren ||
       !isGoodWithAnimals ||
       !reason ||
@@ -87,13 +85,27 @@ const RehomePage = () => {
       !images.some((image) => image !== null)
     ) {
       setError((prev) => " Validation failed! Some fields are empty.");
-
+      window.scrollTo(0, 0);
       toast.error("Validation failed! Some fields are empty.", {
         position: "top-center",
       });
+
       setLoading((prev) => false);
       setCurrntStep((prev) => 1);
       return;
+    }
+
+    if (type == "dog" || type == "cat") {
+      if (!isVaccinated || !isNeutered || !isSpayed || !age) {
+        setError((prev) => " Validation failed! Some fields are empty.");
+
+        toast.error("Validation failed! Some fields are empty.", {
+          position: "top-center",
+        });
+        setLoading((prev) => false);
+        setCurrntStep((prev) => 1);
+        return;
+      }
     }
 
     const formData = new FormData();
@@ -117,6 +129,13 @@ const RehomePage = () => {
     formData.append("state", state);
     formData.append("city", city);
     formData.append("pincode", pincode);
+
+    if (!(type === "bird")) {
+      formData.append("age", age);
+      formData.append("isVaccinated", isVaccinated);
+      formData.append("isSpayed", isSpayed);
+      formData.append("isNeutered", isNeutered);
+    }
 
     // Append array fields as JSON strings
     formData.append("healthIssues", JSON.stringify(healthIssues));
@@ -151,7 +170,7 @@ const RehomePage = () => {
         })
         .catch((error) => {
           toast.error("error adding your pet for listing please try again");
-          setLoading((prev)=>false)
+          setLoading((prev) => false);
           navigate("/rehome-a-pet");
         });
     }, 2000);
@@ -346,13 +365,14 @@ const RehomePage = () => {
                     </label>
                   </div>
                 </div>
-                <div className="col-span-full  mt-3">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Pet Age?
-                  </label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <label
-                      className={`
+                {!(type === "bird") && (
+                  <div className="col-span-full  mt-3">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                      Pet Age?
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <label
+                        className={`
                         flex flex-col items-center md:p-4 px-2 py-4  rounded-lg border-2 cursor-pointer
                         transition-all duration-200 hover:border-[#2f0601]
                         ${
@@ -361,19 +381,19 @@ const RehomePage = () => {
                             : "border-gray-200"
                         }
                       `}
-                    >
-                      <input
-                        name="age"
-                        value="puppy"
-                        type="radio"
-                        onChange={(e) => setAge(e.target.value)}
-                        checked={age === "puppy"}
-                        className="sr-only"
-                      />
-                      Puppyhood
-                    </label>
-                    <label
-                      className={`
+                      >
+                        <input
+                          name="age"
+                          value="puppy"
+                          type="radio"
+                          onChange={(e) => setAge(e.target.value)}
+                          checked={age === "puppy"}
+                          className="sr-only"
+                        />
+                        Puppyhood
+                      </label>
+                      <label
+                        className={`
                         flex flex-col items-center md:p-4 px-2 py-4  rounded-lg border-2 cursor-pointer
                         transition-all duration-200 hover:border-[#2f0601]
                         ${
@@ -382,19 +402,19 @@ const RehomePage = () => {
                             : "border-gray-200"
                         }
                       `}
-                    >
-                      <input
-                        name="age"
-                        value="adolescence"
-                        type="radio"
-                        onChange={(e) => setAge(e.target.value)}
-                        checked={age === "adolescence"}
-                        className="sr-only"
-                      />
-                      Adolescence
-                    </label>
-                    <label
-                      className={`
+                      >
+                        <input
+                          name="age"
+                          value="adolescence"
+                          type="radio"
+                          onChange={(e) => setAge(e.target.value)}
+                          checked={age === "adolescence"}
+                          className="sr-only"
+                        />
+                        Adolescence
+                      </label>
+                      <label
+                        className={`
                         flex flex-col items-center md:p-4 px-2 py-4  rounded-lg border-2 cursor-pointer
                         transition-all duration-200 hover:border-[#2f0601]
                         ${
@@ -403,38 +423,39 @@ const RehomePage = () => {
                             : "border-gray-200"
                         }
                       `}
-                    >
-                      <input
-                        name="age"
-                        value="adult"
-                        type="radio"
-                        onChange={(e) => setAge(e.target.value)}
-                        checked={age === "adult"}
-                        className="sr-only"
-                      />
-                      Adulthood
-                    </label>
-                    <label
-                      className={`
+                      >
+                        <input
+                          name="age"
+                          value="adult"
+                          type="radio"
+                          onChange={(e) => setAge(e.target.value)}
+                          checked={age === "adult"}
+                          className="sr-only"
+                        />
+                        Adulthood
+                      </label>
+                      <label
+                        className={`
                         flex flex-col items-center md:p-4 px-2 py-4  rounded-lg border-2 cursor-pointer
                         transition-all duration-200 hover:border-[#2f0601]
                         ${
                           age === "old" ? "border-[#2f0601]" : "border-gray-200"
                         }
                       `}
-                    >
-                      <input
-                        name="age"
-                        value="old"
-                        type="radio"
-                        onChange={(e) => setAge(e.target.value)}
-                        checked={age === "old"}
-                        className="sr-only"
-                      />
-                      Old
-                    </label>
+                      >
+                        <input
+                          name="age"
+                          value="old"
+                          type="radio"
+                          onChange={(e) => setAge(e.target.value)}
+                          checked={age === "old"}
+                          className="sr-only"
+                        />
+                        Old
+                      </label>
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className="mt-4 col-span-4 sm:col-span-3 md:col-span-2">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Pet Color
@@ -456,13 +477,14 @@ const RehomePage = () => {
                     ))}
                   </select>
                 </div>
-                <div className="col-span-full mt-3">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Pet Vaccination?
-                  </label>
-                  <div className="grid md:grid-cols-4 grid-cols-2  gap-4">
-                    <label
-                      className={`
+                {!(type === "bird") && (
+                  <div className="col-span-full mt-3">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                      Pet Vaccination?
+                    </label>
+                    <div className="grid md:grid-cols-4 grid-cols-2  gap-4">
+                      <label
+                        className={`
                         flex flex-col items-center px-2 py-2  rounded-lg border-2 cursor-pointer
                         transition-all duration-200 hover:border-[#2f0601]
                         ${
@@ -471,19 +493,19 @@ const RehomePage = () => {
                             : "border-gray-200"
                         }
                       `}
-                    >
-                      <input
-                        name="isVaccinated"
-                        value={true}
-                        type="radio"
-                        onChange={(e) => setIsVaccinated((prev) => true)}
-                        checked={isVaccinated === true}
-                        className="sr-only"
-                      />
-                      Yes, Pet is Vaccinated
-                    </label>
-                    <label
-                      className={`
+                      >
+                        <input
+                          name="isVaccinated"
+                          value={true}
+                          type="radio"
+                          onChange={(e) => setIsVaccinated((prev) => true)}
+                          checked={isVaccinated === true}
+                          className="sr-only"
+                        />
+                        Yes, Pet is Vaccinated
+                      </label>
+                      <label
+                        className={`
                         flex flex-col items-center  px-2 py-2  rounded-lg border-2 cursor-pointer
                         transition-all duration-200 hover:border-[#2f0601]
                         ${
@@ -492,26 +514,28 @@ const RehomePage = () => {
                             : "border-gray-200"
                         }
                       `}
-                    >
-                      <input
-                        name="isVaccinated"
-                        value={false}
-                        type="radio"
-                        onChange={(e) => setIsVaccinated((prev) => false)}
-                        checked={isVaccinated === false}
-                        className="sr-only"
-                      />
-                      No, Pet is not Vaccinated
-                    </label>
+                      >
+                        <input
+                          name="isVaccinated"
+                          value={false}
+                          type="radio"
+                          onChange={(e) => setIsVaccinated((prev) => false)}
+                          checked={isVaccinated === false}
+                          className="sr-only"
+                        />
+                        No, Pet is not Vaccinated
+                      </label>
+                    </div>
                   </div>
-                </div>
-                <div className="col-span-full mt-3">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Pet Neutered?
-                  </label>
-                  <div className="grid md:grid-cols-4 grid-cols-2  gap-4">
-                    <label
-                      className={`
+                )}
+                {!(type === "bird") && (
+                  <div className="col-span-full mt-3">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                      Pet Neutered?
+                    </label>
+                    <div className="grid md:grid-cols-4 grid-cols-2  gap-4">
+                      <label
+                        className={`
                         flex flex-col items-center px-2 py-2  rounded-lg border-2 cursor-pointer
                         transition-all duration-200 hover:border-[#2f0601]
                         ${
@@ -520,19 +544,19 @@ const RehomePage = () => {
                             : "border-gray-200"
                         }
                       `}
-                    >
-                      <input
-                        name="isNeutered"
-                        value={true}
-                        type="radio"
-                        onChange={(e) => setIsNeutered((prev) => true)}
-                        checked={isNeutered === true}
-                        className="sr-only"
-                      />
-                      Yes, Pet is Neutered
-                    </label>
-                    <label
-                      className={`
+                      >
+                        <input
+                          name="isNeutered"
+                          value={true}
+                          type="radio"
+                          onChange={(e) => setIsNeutered((prev) => true)}
+                          checked={isNeutered === true}
+                          className="sr-only"
+                        />
+                        Yes, Pet is Neutered
+                      </label>
+                      <label
+                        className={`
                         flex flex-col items-center  px-2 py-2  rounded-lg border-2 cursor-pointer
                         transition-all duration-200 hover:border-[#2f0601]
                         ${
@@ -541,26 +565,28 @@ const RehomePage = () => {
                             : "border-gray-200"
                         }
                       `}
-                    >
-                      <input
-                        name="isNeutered"
-                        value={false}
-                        type="radio"
-                        onChange={(e) => setIsNeutered((prev) => false)}
-                        checked={isNeutered === false}
-                        className="sr-only"
-                      />
-                      No, Pet is not Neutered
-                    </label>
+                      >
+                        <input
+                          name="isNeutered"
+                          value={false}
+                          type="radio"
+                          onChange={(e) => setIsNeutered((prev) => false)}
+                          checked={isNeutered === false}
+                          className="sr-only"
+                        />
+                        No, Pet is not Neutered
+                      </label>
+                    </div>
                   </div>
-                </div>
-                <div className="col-span-full mt-3">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Pet Spayed?
-                  </label>
-                  <div className="grid md:grid-cols-4 grid-cols-2  gap-4">
-                    <label
-                      className={`
+                )}
+                {!(type === "bird") && (
+                  <div className="col-span-full mt-3">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                      Pet Spayed?
+                    </label>
+                    <div className="grid md:grid-cols-4 grid-cols-2  gap-4">
+                      <label
+                        className={`
                         flex flex-col items-center px-2 py-2  rounded-lg border-2 cursor-pointer
                         transition-all duration-200 hover:border-[#2f0601]
                         ${
@@ -569,19 +595,19 @@ const RehomePage = () => {
                             : "border-gray-200"
                         }
                       `}
-                    >
-                      <input
-                        name="isSpayed"
-                        value={true}
-                        type="radio"
-                        onChange={(e) => setIsSpayed((prev) => true)}
-                        checked={isSpayed === true}
-                        className="sr-only"
-                      />
-                      Yes, Pet is Spayed
-                    </label>
-                    <label
-                      className={`
+                      >
+                        <input
+                          name="isSpayed"
+                          value={true}
+                          type="radio"
+                          onChange={(e) => setIsSpayed((prev) => true)}
+                          checked={isSpayed === true}
+                          className="sr-only"
+                        />
+                        Yes, Pet is Spayed
+                      </label>
+                      <label
+                        className={`
                         flex flex-col items-center  px-2 py-2  rounded-lg border-2 cursor-pointer
                         transition-all duration-200 hover:border-[#2f0601]
                         ${
@@ -590,19 +616,20 @@ const RehomePage = () => {
                             : "border-gray-200"
                         }
                       `}
-                    >
-                      <input
-                        name="isSpayed"
-                        value={false}
-                        type="radio"
-                        onChange={(e) => setIsSpayed((prev) => false)}
-                        checked={isSpayed === false}
-                        className="sr-only"
-                      />
-                      No, Pet is not Spayed
-                    </label>
+                      >
+                        <input
+                          name="isSpayed"
+                          value={false}
+                          type="radio"
+                          onChange={(e) => setIsSpayed((prev) => false)}
+                          checked={isSpayed === false}
+                          className="sr-only"
+                        />
+                        No, Pet is not Spayed
+                      </label>
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className="col-span-full mt-3">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Pet good with Animals?
@@ -974,7 +1001,10 @@ const RehomePage = () => {
             {currentStep > 1 && (
               <button
                 className="p-2 text-white font-semibold w-20 rounded-lg bg-[#2f0601]"
-                onClick={() => setCurrntStep((prev) => prev - 1)}
+                onClick={() => {
+                  setCurrntStep((prev) => prev - 1);
+                  window.scrollTo(0, 0);
+                }}
               >
                 previous
               </button>
@@ -984,6 +1014,7 @@ const RehomePage = () => {
               onClick={(e) => {
                 if (currentStep < 3) {
                   setCurrntStep((prev) => prev + 1);
+                  window.scrollTo(0, 0);
                 }
                 if (currentStep === 3) {
                   handleSubmit(e);

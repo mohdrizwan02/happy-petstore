@@ -8,14 +8,67 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 const getAllBlogs = asyncHandler(async (req, res) => {
-  const blogs = await Blog.find({});
+  const { category = "all", limit = 10, page = 1 } = req.query;
+
+  console.log(category, limit, page);
+
+  const perPage = parseInt(limit);
+  const skip = (parseInt(page) - 1) * perPage;
+
+  let blogs;
+  let totalBlogs;
+
+  let query = {}; // Default query fetches all blogs
+
+  if (category === "latest") {
+    query = {}; // No specific filter for latest, just sort by createdAt
+  }
+
+  if (category === "all") {
+    query = {};
+  }
+
+  if (category === "latest") {
+    blogs = await Blog.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(perPage);
+    totalBlogs = await Blog.countDocuments();
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          blogs: blogs,
+          totalPages: Math.ceil(totalBlogs / perPage),
+        },
+        "Latest blogs have been fetched successfully"
+      )
+    );
+  }
+
+  if (category === "all") {
+    blogs = await Blog.find(query).skip(skip).limit(perPage);
+    totalBlogs = await Blog.countDocuments();
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          blogs: blogs,
+          totalPages: Math.ceil(totalBlogs / perPage),
+        },
+        "All blogs have been fetched successfully"
+      )
+    );
+  }
+
   return res.status(200).json(
     new ApiResponse(
       200,
       {
-        blogs,
+        blogs: {},
+        totalPages: 0,
       },
-      "All blogs heav been fetched successfully"
+      "fetched popular blogs"
     )
   );
 });
@@ -169,20 +222,14 @@ const deleteBlog = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid request or blog id not provided");
   }
 
-  const blog = Blog.findById(new mongoose.Types.ObjectId(blogId))
+  const blog = Blog.findById(new mongoose.Types.ObjectId(blogId));
 
-  if(!blog){
-    throw new ApiError(
-      400,
-      "blog found or invalid blog id"
-    )
+  if (!blog) {
+    throw new ApiError(400, "blog found or invalid blog id");
   }
 
-  if(String(blog.owner) !== String(req.user._id)){
-    throw new ApiError(
-      400,
-      "you are not the owner :: unauthorized request"
-    )
+  if (String(blog.owner) !== String(req.user._id)) {
+    throw new ApiError(400, "you are not the owner :: unauthorized request");
   }
 
   try {
@@ -217,8 +264,6 @@ const deleteBlog = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid blog Id");
   }
 });
-
-
 
 export {
   getAllBlogs,

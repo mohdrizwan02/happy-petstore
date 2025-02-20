@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 
 const PageNotFound = () => {
+  window.scrollTo(0, 0);
   const navigate = useNavigate()
   return (
     <main>

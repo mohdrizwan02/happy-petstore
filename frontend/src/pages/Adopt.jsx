@@ -3,6 +3,7 @@ import PetModal from "../components/ui/PetModal";
 import { useNavigate } from "react-router";
 
 const AdoptPage = () => {
+  window.scrollTo(0, 0);
   const navigate = useNavigate()
   const faqs = [
     {

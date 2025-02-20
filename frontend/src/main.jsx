@@ -31,8 +31,10 @@ import DogsPage from "./pages/Dogs.jsx";
 import CatsPage from "./pages/Cats.jsx";
 import BirdsPage from "./pages/Birds.jsx";
 import ViewPet from "./pages/ViewPet.jsx";
+import AddBlog from "./pages/AddBlog.jsx";
 
 import AuthMiddleware from "./components/auth/AuthMiddleware.jsx";
+import Blog from "./pages/Blog.jsx";
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
@@ -80,8 +82,13 @@ createRoot(document.getElementById("root")).render(
             </Route>
           </Route>
           <Route path="faqs" element={<FAQSPage />} />
+
           <Route path="blogs">
             <Route index element={<BlogsPage />} />
+            <Route path="add-blog">
+              <Route index element={<AddBlog />} />
+            </Route>
+            <Route path=":blogId/view" element={<Blog/>}/>
           </Route>
           <Route path="/rehome-a-pet">
             <Route index element={<RehomePage />} />
@@ -90,17 +97,14 @@ createRoot(document.getElementById("root")).render(
             <Route index element={<AdoptPage />} />
             <Route path="dogs">
               <Route index element={<DogsPage />} />
-              {/* <Route path=":id" element={<ViewPet />} /> */}
             </Route>
             <Route path="cats">
               <Route index element={<CatsPage />} />
-              {/* <Route path=":id" element={<ViewPet />} /> */}
             </Route>
             <Route path="birds">
               <Route index element={<BirdsPage />} />
-              {/* <Route path=":id" element={<ViewPet />} /> */}
             </Route>
-            <Route path=":type/:id" element={<ViewPet/>}/>
+            <Route path=":type/:id" element={<ViewPet />} />
           </Route>
         </Route>
       </Routes>

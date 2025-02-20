@@ -26,6 +26,7 @@ const Dogs = () => {
   const [pincode, setPincode] = useState();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     setLoading((prev) => true);
     setTimeout(() => {
       console.log(loading);
@@ -46,6 +47,7 @@ const Dogs = () => {
   }, []);
 
   const resetFilter = () => {
+    window.scrollTo(0, 0);
     if (!isFilterSet) {
       setIsModalOpen((prev) => false);
       return;
@@ -67,11 +69,13 @@ const Dogs = () => {
   };
 
   const handleFilter = () => {
+
     if (!breed && !color && !state && !city && !pincode) {
       setIsFilterSet((prev) => false);
       setIsModalOpen((prev) => false);
       return;
     }
+    window.scrollTo(0, 0);
 
     setLoading((prev) => true);
     setIsFilterSet((prev) => true);
@@ -108,7 +112,7 @@ const Dogs = () => {
 
   return (
     <>
-      <div className="w-full h-screen">
+      <div className="w-full h-screen" id="#">
         <div className="flex justify-between my-6 items-center mx-5">
           <h1 className="text-center sm:text-4xl text-2xl font-bold text-gray-700">
             Dogs Available for Adoption
@@ -269,7 +273,9 @@ const Dogs = () => {
         </div>
         <div className="mx-2">
           {loading ? (
-            <div className="">Loading ......</div>
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+            </div>
           ) : isFilterSet ? (
             <div className="mx-2 lg:mx-16 my-8">
               {filterDogs.length > 0 ? (

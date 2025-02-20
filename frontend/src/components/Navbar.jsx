@@ -8,7 +8,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ClipLoader from "react-spinners/ClipLoader";
 
-
 const navItems = [
   { label: "Home", href: "/", authentication: false },
   { label: "Home", href: "/", authentication: true },
@@ -37,9 +36,10 @@ export default function Navbar() {
             delay: 1000,
           });
           setLoading((prev) => false);
-           navigate("/login");
-           setTimeout(()=>{dispatch(logout())},2000);
-         
+          navigate("/login");
+          setTimeout(() => {
+            dispatch(logout());
+          }, 1000);
         }, 1000);
       })
       .catch((error) => {

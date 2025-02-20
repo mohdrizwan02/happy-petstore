@@ -47,25 +47,24 @@ const addPet = asyncHandler(async (req, res) => {
     imagesLocalPath.push(image.path);
   });
 
+
+
+
   for (let i = 0; i < imagesLocalPath.length; i++) {
     const response = await uploadOnCloudinary(imagesLocalPath[i]);
 
     cloudinaryFilesPath[i] = response.url;
   }
 
-  const createdPet = await Pet.create({
+
+  const petObject = {
     name,
     type,
     breed,
     gender,
     color,
-    age,
-    images: cloudinaryFilesPath,
-    isVaccinated,
-    isSpayed,
-    isNeutered,
+    images:cloudinaryFilesPath,
     owner,
-
     careTips: newCareTips,
     healthIssues: newHealthIssues,
     description,
@@ -76,12 +75,23 @@ const addPet = asyncHandler(async (req, res) => {
       fullName,
       phone,
     },
-
     country: "india",
     state,
     city,
     pincode,
-  });
+  };
+
+  
+
+  if(type !=="bird"){
+    petObject.isVaccinated = isVaccinated
+    petObject.isNeutered = isNeutered
+    petObject.isSpayed = isSpayed
+    petObject.age = age
+  }
+
+
+  const createdPet = await Pet.create(petObject);
 
   if (!createdPet) {
     throw new ApiError(500, "Failed to add the pet");

@@ -6,11 +6,13 @@ import { toast } from "react-toastify";
 import { MdClose } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { useNavigate } from "react-router";
 
 const Birds = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFilterSet, setIsFilterSet] = useState(false);
   const [breed, setBreed] = useState();
+  const navigate = useNavigate()
 
   const [loading, setLoading] = useState(true);
   const pets = useSelector((state) => state.pet.pets);
@@ -24,6 +26,7 @@ const Birds = () => {
   const [pincode, setPincode] = useState();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     setLoading((prev) => true);
     setTimeout(() => {
       console.log(loading);
@@ -48,6 +51,7 @@ const Birds = () => {
       setIsModalOpen((prev) => false);
       return;
     }
+    window.scrollTo(0, 0);
     if (!breed && !color && !state && !city && !pincode) {
       setIsModalOpen((prev) => false);
       return;
@@ -65,6 +69,7 @@ const Birds = () => {
   };
 
   const handleFilter = () => {
+    window.scrollTo(0, 0);
     if (!breed && !state && !city && !pincode) {
       setIsFilterSet((prev) => false);
       setIsModalOpen((prev) => false);
@@ -244,7 +249,9 @@ const Birds = () => {
         </div>
         <div className="mx-2">
           {loading ? (
-            <div className="">Loading ......</div>
+               <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+               <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+             </div>
           ) : isFilterSet ? (
             <div className="mx-2 lg:mx-16 my-8">
               {filterBirds.length > 0 ? (
@@ -263,7 +270,7 @@ const Birds = () => {
                           {bird.name}
                         </h4>
                         <h1>
-                          {bird.gender} , {bird.age}
+                          {bird.gender} 
                         </h1>
                         <h1 className="">
                           {bird.city} , {bird.state}
@@ -277,7 +284,10 @@ const Birds = () => {
                         <h1 className="">Name : {bird.contact?.fullName}</h1>
                         <h1 className="">Phone : {bird.contact?.phone}</h1>
                         <div className="flex justify-center my-2">
-                          <button className="flex items-center gap-2 hover:underline">
+                          <button
+                            className="flex items-center gap-2 hover:underline"
+                            onClick={() => navigate(`${bird._id}`)}
+                          >
                             view more details <FaExternalLinkAlt />{" "}
                           </button>
                         </div>
@@ -311,7 +321,7 @@ const Birds = () => {
                         </h4>
 
                         <h1>
-                          {bird.gender} , {bird.age}
+                          {bird.gender}
                         </h1>
                         <h1 className="">
                           {bird.city} , {bird.state}
@@ -325,7 +335,10 @@ const Birds = () => {
                         <h1 className="">Name : {bird.contact?.fullName}</h1>
                         <h1 className="">Phone : {bird.contact?.phone}</h1>
                         <div className="flex justify-center my-2">
-                          <button className="flex items-center gap-2 hover:underline">
+                          <button
+                            className="flex items-center gap-2 hover:underline"
+                            onClick={() => navigate(`${bird._id}`)}
+                          >
                             view more details <FaExternalLinkAlt />{" "}
                           </button>
                         </div>

@@ -352,7 +352,7 @@ const updateProfileDetails = asyncHandler(async (req, res) => {
     about,
     fullName,
   } = req.body;
-  console.log(country, city, house, state, locality, mobileNumber, pincode);
+  
 
   const user = await User.findByIdAndUpdate(
     req.user._id,
@@ -450,10 +450,11 @@ const getUserProfile = asyncHandler(async (req, res) => {
     },
   ]);
 
+
+
   if (!userProfile) {
     throw new ApiError(401, "user doesn't exist");
   }
-
   return res
     .status(200)
     .json(

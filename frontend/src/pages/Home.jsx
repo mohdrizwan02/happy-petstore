@@ -3,32 +3,16 @@ import Hero from "../components/Hero";
 import Newsletter from "../components/Newsletter";
 import FAQsection from "../components/FAQsection";
 
-
 import { useSelector, useDispatch } from "react-redux";
-
 
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
 const HomePage = () => {
-  
-  
-  // const userData = useSelector((state) => state.auth.userData);
-
-  // useEffect(() => {
-  //   if (userData) {
-  //     if (!userData.userUpdated) {
-  //       toast.info("your profile is not updated please update your profile",
-  //         {
-  //         delay:2000,
-  //         position:"top-center",
-  //         pauseOnHover: false,
-          
-  //       });
-  //     }
-  //   }
-  // }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>
