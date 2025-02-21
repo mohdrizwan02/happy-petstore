@@ -18,7 +18,6 @@ const Profile = () => {
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [user, setUser] = useState();
   useEffect(() => {
-    
     try {
       axios
         .get("/api/v1/users/get-user-profile")
@@ -187,10 +186,11 @@ const Profile = () => {
                       className="w-full mx-auto group sm:max-w-sm"
                       key={index}
                     >
-                      <a href="">
+                      <button
+                        onClick={()=>navigate(`blogs/${blog._id}/view`)}
+                      >
                         <img
                           src={blog.image}
-                          loading="lazy"
                           alt=""
                           className="w-full rounded-lg"
                         />
@@ -205,7 +205,7 @@ const Profile = () => {
                             {blog.content}
                           </p>
                         </div>
-                      </a>
+                      </button>
                     </li>
                   ))}
                 </ul>

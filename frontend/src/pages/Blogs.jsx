@@ -118,7 +118,7 @@ const Blogs = () => {
                       </p>
 
                       <button
-                        onClick={() => navigate(`${blog._id}`)}
+                        onClick={() => navigate(`${blog._id}/view`)}
                         className="group mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600"
                       >
                         view Blog

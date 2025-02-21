@@ -173,7 +173,7 @@ const editBlog = asyncHandler(async (req, res) => {
 });
 
 const editBlogImage = asyncHandler(async (req, res) => {
-  const blogId = req.params.blogId;
+  const blogId = req.params.blogId ; 
 
   const blogImageLocalPath = req.file?.path;
 

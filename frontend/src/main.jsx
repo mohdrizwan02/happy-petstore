@@ -32,6 +32,7 @@ import CatsPage from "./pages/Cats.jsx";
 import BirdsPage from "./pages/Birds.jsx";
 import ViewPet from "./pages/ViewPet.jsx";
 import AddBlog from "./pages/AddBlog.jsx";
+import EditBlog from "./pages/EditBlog.jsx";
 
 import AuthMiddleware from "./components/auth/AuthMiddleware.jsx";
 import Blog from "./pages/Blog.jsx";
@@ -79,6 +80,8 @@ createRoot(document.getElementById("root")).render(
             <Route path="edit" element={<EditProfilePage />} />
             <Route path="blogs">
               <Route index element={<UserBlogsPage />} />
+              <Route path=":blogId/view" element={<Blog />} />
+              <Route path=":blogId/edit" element={<EditBlog />} />
             </Route>
           </Route>
           <Route path="faqs" element={<FAQSPage />} />
@@ -88,7 +91,7 @@ createRoot(document.getElementById("root")).render(
             <Route path="add-blog">
               <Route index element={<AddBlog />} />
             </Route>
-            <Route path=":blogId/view" element={<Blog/>}/>
+            <Route path=":blogId/view" element={<Blog />} />
           </Route>
           <Route path="/rehome-a-pet">
             <Route index element={<RehomePage />} />
